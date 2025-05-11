@@ -1,7 +1,10 @@
+"use client";
 import React from "react";
+import MovieGrid from "@/components/MovieGrid";
 
 const Upcoming = () => {
-  return <div>Upcoming</div>;
+  const apiBase = "https://api.themoviedb.org/3/movie/upcoming";
+  return <MovieGrid apiBase={apiBase} />;
 };
 
 export default Upcoming;

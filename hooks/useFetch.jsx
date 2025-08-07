@@ -9,8 +9,16 @@ export const useFetch = (url) => {
     const fetchData = async () => {
       try {
         const response = await fetch(url);
+
+        // Ensure the request was successful
         if (!response.ok) throw new Error("Failed to fetch");
-        const json = await response.json();
+
+        const json = await response.json(); // Wait until json is assigned here
+
+        // Now you can safely log the data
+        console.log("Fetched data:", json);
+        console.log("Response status code:", response.status);
+
         setData(json.results || []);
       } catch (err) {
         setError(err.message);
@@ -21,5 +29,6 @@ export const useFetch = (url) => {
 
     fetchData();
   }, [url]);
+
   return { data, loading, error };
 };

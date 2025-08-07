@@ -4,18 +4,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-// import MovieDetail from "@/app/MovieDetail/page";
+import { useRouter } from "next/navigation"; // Add this import
 
 export const Header = () => {
   const [darkMode, setDarkMode] = useState(false);
-  //
+  // On component mount: load the saved dark mode preference from localStorage
   useEffect(() => {
     const savedDarkMode = JSON.parse(localStorage.getItem("darkMode") || false);
     setDarkMode(savedDarkMode);
   }, []);
-
+  // Update localStorage and class when darkMode changes
   useEffect(() => {
-    // Update localStorage and class when darkMode changes
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -29,6 +28,15 @@ export const Header = () => {
   const inActiveClass =
     "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white";
   const [hidden, setHidden] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
   return (
     <header>
       <nav className="bg-white border border-gray-200 dark:bg-gray-900 dark:border-none">
@@ -37,13 +45,6 @@ export const Header = () => {
             href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
-            {/* <Image
-              src=""
-              className="h-8"
-              alt="Flowbite Logo"
-              width={32}
-              height={32}
-            /> */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
@@ -62,25 +63,12 @@ export const Header = () => {
           </Link>
 
           <div id="mobile-nav" className="flex md:order-2">
-            {/* i want to include darkmode button here and svg that changes moon and sun when clicked i don't need the fuctionality for now */}
+            {/* Dark Mode Button */}
             <button
               onClick={() => setDarkMode(!darkMode)}
               className="text-gray-500 border border-gray-200 dark:text-gray-400 dark:border dark:border-gray-700 mr-[20px]  hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
             >
               {darkMode ? (
-                // Moon Icon
-                // <svg
-                //   xmlns="http://www.w3.org/2000/svg"
-                //   fill="currentColor"
-                //   viewBox="0 0 20 20"
-                //   className="w-5 h-5"
-                // >
-                //   <path
-                //     fillRule="evenodd"
-                //     d="M10 4.5a.75.75 0 01.75.75v.25a.75.75 0 01-1.5 0V5.25A.75.75 0 0110 4.5zm4.95 1.85a.75.75 0 011.06 1.06l-.176.176a.75.75 0 11-1.06-1.06l.176-.176zM15.5 10a.75.75 0 01.75.75h.25a.75.75 0 010 1.5h-.25a.75.75 0 01-.75-.75v-.25a.75.75 0 011.5 0v.25A.75.75 0 0115.5 10zM10 15.5a.75.75 0 01.75.75v.25a.75.75 0 01-1.5 0v-.25A.75.75 0 0110 15.5zm-4.95-1.85a.75.75 0 01-1.06-1.06l.176-.176a.75.75 0 111.06 1.06l-.176.176zM4.5 10a.75.75 0 01-.75-.75H3.5a.75.75 0 010-1.5h.25A.75.75 0 014.5 10zm.95-4.95a.75.75 0 00-1.06 1.06l.176.176a.75.75 0 101.06-1.06l-.176-.176z"
-                //     clipRule="evenodd"
-                //   />
-                // </svg>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -96,16 +84,6 @@ export const Header = () => {
                   />
                 </svg>
               ) : (
-                // Sun Icon
-
-                // <svg
-                //   xmlns="http://www.w3.org/2000/svg"
-                //   fill="currentColor"
-                //   viewBox="0 0 20 20"
-                //   className="w-5 h-5"
-                // >
-                //   <path d="M17.293 13.293a8 8 0 01-10.586-10.586A8 8 0 1017.293 13.293z" />
-                // </svg>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -158,20 +136,32 @@ export const Header = () => {
                 >
                   <path
                     stroke="currentColor"
-                    strokeLinecap="round"
+                    strokeLinecap="round`"
                     strokeLinejoin="round"
                     strokeWidth="2"
                     d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                   />
                 </svg>
               </div>
-              <input
+              {/* <input
                 type="text"
                 className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Search..."
-              />
+              /> */}
             </div>
-
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  router.push(`/search?q=${searchQuery}`);
+                }
+              }}
+              className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search..."
+            />
             <button
               data-collapse-toggle="navbar-search"
               type="button"

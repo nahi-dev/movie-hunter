@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation"; // Add this import
 
 export const Header = () => {
   const [darkMode, setDarkMode] = useState(false);
+  const pathName = usePathname();
+
   // On component mount: load the saved dark mode preference from localStorage
   useEffect(() => {
     const savedDarkMode = JSON.parse(localStorage.getItem("darkMode") || false);
@@ -22,7 +24,7 @@ export const Header = () => {
       document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
-  const pathName = usePathname();
+
   const activeClass =
     "block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500";
   const inActiveClass =

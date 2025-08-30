@@ -1,22 +1,22 @@
-"use client";
-import React from "react";
-import { useSearchParams } from "next/navigation";
-import MovieGrid from "@/components/MovieGrid";
-import usePageTitle from "@/hooks/usePageTitle";
+// "use client";
+// import React from "react";
+// import { useSearchParams } from "next/navigation";
+// import MovieGrid from "@/components/MovieGrid";
+// import usePageTitle from "@/hooks/usePageTitle";
 
-const Search = () => {
-  const searchParams = useSearchParams();
-  const queryTerm = searchParams.get("q") || "";
+// const Search = () => {
+//   const searchParams = useSearchParams();
+//   const queryTerm = searchParams.get("q") || "";
 
-  console.log("Query term:", queryTerm);
+//   console.log("Query term:", queryTerm);
 
-  const apiBase = "https://api.themoviedb.org/3/search/movie";
+//   const apiBase = "https://api.themoviedb.org/3/search/movie";
 
-  usePageTitle(
-    queryTerm ? `Search: ${queryTerm} | moviehunter` : "Search | moviehunter"
-  );
+//   usePageTitle(
+//     queryTerm ? `Search: ${queryTerm} | moviehunter` : "Search | moviehunter"
+//   );
 
-  return <MovieGrid apiBase={apiBase} queryTerm={queryTerm} />;
-};
+//   return <MovieGrid apiBase={apiBase} queryTerm={queryTerm} />;
+// };
 
-export default Search;
+// export default Search;

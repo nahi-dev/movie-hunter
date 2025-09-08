@@ -36,7 +36,7 @@ export const Header = () => {
   const apiBase = "https://api.themoviedb.org/3/movie/now_playing";
   // search functionality
   const searchParams = useSearchParams();
-  const searchTerm = searchParams.get("search") || "";
+  const searchTerm = searchParams?.get("search") || "";
   const [input, setInput] = useState(searchTerm);
   // Update input when search term changes in URL
   useEffect(() => {

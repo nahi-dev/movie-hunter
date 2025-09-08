@@ -1,8 +1,7 @@
 "use client";
-import React from "react"; // ← ADD THIS LINE
+
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation"; // Add this import
@@ -31,50 +30,15 @@ export const Header = () => {
   const inActiveClass =
     "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white";
   const [hidden, setHidden] = useState(true);
-
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
-  const apiBase = "https://api.themoviedb.org/3/movie/now_playing";
-  // search functionality
-  const searchParams = useSearchParams();
-  const searchTerm = searchParams?.get("search") || "";
-  const [input, setInput] = useState(searchTerm);
-  // Update input when search term changes in URL
-  useEffect(() => {
-    setInput(searchTerm);
-  }, [searchTerm]);
-  // con
-  const onSearchHandler = (e) => {
+
+  const handleSearch = (e) => {
     e.preventDefault();
-
-    // Create new URLSearchParams
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (input.trim()) {
-      params.set("search", input.trim());
-    } else {
-      params.delete("search");
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
-
-    // Navigate to current path with updated search params
-    router.push(`${pathName}?${params.toString()}`);
   };
-
-  // const [filteredMovie, setFilteredMovie] = useState();
-  // useEffect(() => {
-  //   if (apiBase && apiBase.length > 0) {
-  //     const tempMovies = apiBase.slice();
-  //     searchTerm
-  //       ? setFilteredMovie(
-  //           tempMovies.filter((item) =>
-  //             item.original_title
-  //               .toLowerCase()
-  //               .includes(searchTerm.toLowerCase())
-  //           )
-  //         )
-  //       : setFilteredMovie(tempMovies);
-  //   }
-  // }, [apiBase, searchTerm]);
-
   return (
     <header>
       <nav className="bg-white border border-gray-200 dark:bg-gray-900 dark:border-none">
@@ -181,18 +145,21 @@ export const Header = () => {
                   />
                 </svg>
               </div>
+              
             </div>
-            <form onSubmit={onSearchHandler}>
-              <input
-                data={searchTerm}
-                onChange={(e) => setInput(e.target.value)}
-                value={input}
-                type="text"
-                className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search..."
-              />
-            </form>
-
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  router.push(`/search?q=${searchQuery}`);
+                }
+              }}
+              className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search..."
+            />
             <button
               data-collapse-toggle="navbar-search"
               type="button"
@@ -298,22 +265,3 @@ export const Header = () => {
     </header>
   );
 };
-export function HeaderSuspended() {
-  return (
-    <React.Suspense
-      fallback={
-        <div className="bg-white border border-gray-200 dark:bg-gray-900 dark:border-none">
-          <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
-            <div className="flex items-center space-x-3 rtl:space-x-reverse">
-              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-              <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-            </div>
-            <div className="h-10 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-          </div>
-        </div>
-      }
-    >
-      <Header />
-    </React.Suspense>
-  );
-}

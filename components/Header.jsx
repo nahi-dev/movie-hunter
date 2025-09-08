@@ -38,10 +38,27 @@ export const Header = () => {
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("search") || "";
   const [input, setInput] = useState(searchTerm);
+  // Update input when search term changes in URL
+  useEffect(() => {
+    setInput(searchTerm);
+  }, [searchTerm]);
+  // con
   const onSearchHandler = (e) => {
     e.preventDefault();
-    router.push(`${pathName}?search=${encodeURIComponent(input)}`);
+
+    // Create new URLSearchParams
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (input.trim()) {
+      params.set("search", input.trim());
+    } else {
+      params.delete("search");
+    }
+
+    // Navigate to current path with updated search params
+    router.push(`${pathName}?${params.toString()}`);
   };
+
   // const [filteredMovie, setFilteredMovie] = useState();
   // useEffect(() => {
   //   if (apiBase && apiBase.length > 0) {

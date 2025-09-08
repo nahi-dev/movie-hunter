@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react"; // ← ADD THIS LINE
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -298,3 +298,22 @@ export const Header = () => {
     </header>
   );
 };
+export function HeaderSuspended() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="bg-white border border-gray-200 dark:bg-gray-900 dark:border-none">
+          <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
+            <div className="flex items-center space-x-3 rtl:space-x-reverse">
+              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+            </div>
+            <div className="h-10 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+          </div>
+        </div>
+      }
+    >
+      <Header />
+    </React.Suspense>
+  );
+}

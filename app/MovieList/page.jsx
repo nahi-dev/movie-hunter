@@ -1,4 +1,3 @@
-import { Header } from "@/components/Header";
 import { MovieGridSuspended } from "@/components/MovieGrid"; // ← CHANGE IMPORT
 
 const MovieList = () => {

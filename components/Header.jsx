@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation"; // Add this import
@@ -30,15 +31,33 @@ export const Header = () => {
   const inActiveClass =
     "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white";
   const [hidden, setHidden] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
 
-  const handleSearch = (e) => {
+  const router = useRouter();
+  const apiBase = "https://api.themoviedb.org/3/movie/now_playing";
+  // search functionality
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("search") || "";
+  const [input, setInput] = useState(searchTerm);
+  const onSearchHandler = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
+    router.push(`${pathName}?search=${encodeURIComponent(input)}`);
   };
+  // const [filteredMovie, setFilteredMovie] = useState();
+  // useEffect(() => {
+  //   if (apiBase && apiBase.length > 0) {
+  //     const tempMovies = apiBase.slice();
+  //     searchTerm
+  //       ? setFilteredMovie(
+  //           tempMovies.filter((item) =>
+  //             item.original_title
+  //               .toLowerCase()
+  //               .includes(searchTerm.toLowerCase())
+  //           )
+  //         )
+  //       : setFilteredMovie(tempMovies);
+  //   }
+  // }, [apiBase, searchTerm]);
+
   return (
     <header>
       <nav className="bg-white border border-gray-200 dark:bg-gray-900 dark:border-none">
@@ -145,21 +164,18 @@ export const Header = () => {
                   />
                 </svg>
               </div>
-              
             </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  router.push(`/search?q=${searchQuery}`);
-                }
-              }}
-              className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search..."
-            />
+            <form onSubmit={onSearchHandler}>
+              <input
+                data={searchTerm}
+                onChange={(e) => setInput(e.target.value)}
+                value={input}
+                type="text"
+                className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search..."
+              />
+            </form>
+
             <button
               data-collapse-toggle="navbar-search"
               type="button"

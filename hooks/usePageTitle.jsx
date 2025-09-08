@@ -7,6 +7,7 @@ const usePageTitle = (title) => {
       document.title = title;
     }
   }, [title]);
+  console.log(title);
 };
 
 export default usePageTitle;
